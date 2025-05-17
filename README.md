@@ -26,7 +26,7 @@ This is a Spring Boot-based Document Management and Basic Q&A Application. It al
 ### ✅ 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/document-management-app.git
+git clone [https://github.com/your-username/document-management-app.git](https://github.com/dominicsharma98/document)
 cd document-management-app
 ```
 
