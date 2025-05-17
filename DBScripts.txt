@@ -1,0 +1,92 @@
+-- Table: public.documents
+
+-- DROP TABLE IF EXISTS public.documents;
+
+CREATE TABLE IF NOT EXISTS public.documents
+(
+    id uuid NOT NULL,
+    title character varying(255) COLLATE pg_catalog."default",
+    author character varying(255) COLLATE pg_catalog."default",
+    type character varying(255) COLLATE pg_catalog."default",
+    content text COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    tsv tsvector,
+    CONSTRAINT documents_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.documents
+    OWNER to postgres;
+-- Index: idx_document_content_tsvector
+
+-- DROP INDEX IF EXISTS public.idx_document_content_tsvector;
+
+CREATE INDEX IF NOT EXISTS idx_document_content_tsvector
+    ON public.documents USING gin
+    (to_tsvector('english'::regconfig, content))
+    TABLESPACE pg_default;
+-- Index: idx_tsv
+
+-- DROP INDEX IF EXISTS public.idx_tsv;
+
+CREATE INDEX IF NOT EXISTS idx_tsv
+    ON public.documents USING gin
+    (tsv)
+    TABLESPACE pg_default;
+
+
+
+-- Table: public.users
+
+-- DROP TABLE IF EXISTS public.users;
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id uuid NOT NULL,
+    username character varying(255) COLLATE pg_catalog."default",
+    password character varying(255) COLLATE pg_catalog."default",
+    role character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT users_username_key UNIQUE (username)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.users
+    OWNER to postgres;
+
+
+-- Enable UUID extension if not already enabled
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Insert sample documents
+INSERT INTO public.documents (id, title, author, type, content, created_at, tsv)
+VALUES
+(
+    uuid_generate_v4(),
+    'Spring Boot Guide',
+    'Alice',
+    'PDF',
+    'This document contains a complete guide on how to use Spring Boot with practical examples.',
+    now(),
+    to_tsvector('english', 'This document contains a complete guide on how to use Spring Boot with practical examples.')
+),
+(
+    uuid_generate_v4(),
+    'PostgreSQL Full Text Search',
+    'Bob',
+    'DOCX',
+    'PostgreSQL offers powerful full-text search capabilities using tsvector and tsquery.',
+    now(),
+    to_tsvector('english', 'PostgreSQL offers powerful full-text search capabilities using tsvector and tsquery.')
+),
+(
+    uuid_generate_v4(),
+    'JWT Authentication',
+    'Charlie',
+    'TXT',
+    'This article explains JSON Web Token (JWT) based authentication and authorization in APIs.',
+    now(),
+    to_tsvector('english', 'This article explains JSON Web Token (JWT) based authentication and authorization in APIs.')
+);
