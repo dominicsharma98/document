@@ -27,8 +27,6 @@ public class Document {
 
     private String type; // e.g., "PDF", "DOCX"
 
-    @Lob
-    @Column(length = 100000)
     private String content;
 
     private LocalDateTime createdAt;
